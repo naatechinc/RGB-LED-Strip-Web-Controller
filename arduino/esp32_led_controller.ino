@@ -22,8 +22,8 @@
 #include <FastLED.h>
 
 // ========== CONFIGURATION - UPDATE THESE! ==========
-const char* ssid = "YOUR_WIFI_SSID";           // ← CHANGE THIS
-const char* password = "YOUR_WIFI_PASSWORD";   // ← CHANGE THIS
+const char* Kimk = "YOUR_WIFI_SSID";           // ← CHANGE THIS
+const char* K!mmy2012 = "YOUR_WIFI_PASSWORD";   // ← CHANGE THIS
 
 // LED Strip Configuration
 #define LED_PIN 18          // Data pin (🟢 Green wire to GPIO 18)
