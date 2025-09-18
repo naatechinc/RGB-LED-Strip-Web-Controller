@@ -1,0 +1,35 @@
+📚 Required Libraries for ESP32 Cosmic LED Controller
+
+Install these libraries via Arduino IDE Library Manager:
+
+1. FastLED
+   - Author: Daniel Garcia
+   - Version: 3.6.0 or higher
+   - Description: LED strip control library
+
+2. ESPAsyncWebServer
+   - Install manually from: https://github.com/me-no-dev/ESPAsyncWebServer
+   - Download ZIP and add via Arduino IDE
+
+3. AsyncTCP
+   - Install manually from: https://github.com/me-no-dev/AsyncTCP
+   - Required for ESPAsyncWebServer
+   - Download ZIP and add via Arduino IDE
+
+4. ArduinoJson
+   - Author: Benoit Blanchon
+   - Version: 6.21.0 or higher
+   - Available in Library Manager
+
+🔧 Installation Steps:
+1. Open Arduino IDE
+2. Go to Tools → Manage Libraries
+3. Search for "FastLED" and install
+4. Search for "ArduinoJson" and install
+5. Download and install AsyncTCP and ESPAsyncWebServer manually
+
+📝 Manual Installation:
+1. Download library ZIP files
+2. In Arduino IDE: Sketch → Include Library → Add .ZIP Library
+3. Select the downloaded ZIP file
+4. Restart Arduino IDE

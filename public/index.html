@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Cosmic LED Controller ✨</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF69B4">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(45deg, 
+                #ff006e 0%, #8338ec 15%, #3a86ff 30%, #06ffa5 45%, 
+                #ffbe0b 60%, #fb5607 75%, #ff006e 90%, #8338ec 100%);
+            background-size: 400% 400%;
+            animation: cosmicGradient 8s ease infinite;
+            min-height: 100vh; display: flex; gap: 25px; padding: 25px;
+            position: relative; overflow-x: hidden;
+        }
+        @keyframes cosmicGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        body::before{
+            content:''; position:absolute; inset:0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255,105,180,.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(131,56,236,.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(58,134,255,.2) 0%, transparent 50%),
+                radial-gradient(circle at 60% 70%, rgba(6,255,165,.2) 0%, transparent 50%);
+            animation: floatParticles 20s ease-in-out infinite; pointer-events:none;
+        }
+        @keyframes floatParticles { 0%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-20px) rotate(90deg)} 50%{transform:translateY(-40px) rotate(180deg)} 75%{transform:translateY(-20px) rotate(270deg)} }
+        .panel{ background:rgba(255,255,255,.08); backdrop-filter:blur(25px); border:2px solid rgba(255,255,255,.2);
+            border-radius:30px; padding:40px; box-shadow:0 25px 45px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.4), 0 0 50px rgba(255,105,180,.2); position:relative; overflow:hidden;}
+        .panel::before{ content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg, rgba(255,105,180,.1), rgba(131,56,236,.1), rgba(58,134,255,.1)); z-index:-1;}
+        .control-panel{ flex:1; max-width:450px; min-width:350px;}
+        .color-panel{ flex:2; max-width:650px;}
+        h1,h2{ background:linear-gradient(45deg,#ff69b4,#ff1493,#da70d6,#ba55d3); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+            margin-bottom:35px; text-align:center; font-weight:700; font-size:2.2em; text-shadow:0 0 30px rgba(255,105,180,.5); position:relative;}
+        h1::after{ content:'✨'; position:absolute; top:-10px; right:-30px; font-size:.7em; animation:sparkle 2s ease-in-out infinite;}
+        h2::after{ content:'🌈'; position:absolute; top:-5px; right:-35px; font-size:.6em; animation:bounce 3s ease-in-out infinite;}
+        @keyframes sparkle{0%,100%{transform:scale(1) rotate(0); opacity:.8} 50%{transform:scale(1.3) rotate(180deg); opacity:1}}
+        @keyframes bounce{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
+        .slider-container{ margin-bottom:30px; position:relative;}
+        .slider-label{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-weight:600; color:rgba(255,255,255,.95); font-size:1.1em; text-shadow:0 2px 10px rgba(0,0,0,.3);}
+        .slider-value{ background:linear-gradient(45deg,#ff69b4,#8a2be2); color:white; padding:8px 12px; border-radius:15px; min-width:50px; text-align:center; font-family:'Space Grotesk', monospace; font-weight:600; box-shadow:0 5px 15px rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.3); transition:all .2s ease;}
+        .slider{ width:100%; height:12px; border-radius:25px; outline:none; transition:all .3s ease; -webkit-appearance:none; cursor:pointer;}
+        .slider::-webkit-slider-thumb{ -webkit-appearance:none; width:28px; height:28px; border-radius:50%; background:linear-gradient(45deg,#fff,#ffc0cb); cursor:pointer; box-shadow:0 0 20px rgba(255,105,180,.6), 0 5px 15px rgba(0,0,0,.3); border:3px solid rgba(255,255,255,.8); transition:all .2s ease;}
+        .slider::-webkit-slider-thumb:hover{ transform:scale(1.2); box-shadow:0 0 30px rgba(255,105,180,.8), 0 8px 25px rgba(0,0,0,.4);}
+        .red-slider{ background:linear-gradient(to right, rgba(0,0,0,.3), #ff1493 30%, #ff69b4 70%, #ff1493); box-shadow:0 5px 15px rgba(255,20,147,.4);}
+        .green-slider{ background:linear-gradient(to right, rgba(0,0,0,.3), #00ff7f 30%, #32cd32 70%, #00ff00); box-shadow:0 5px 15px rgba(0,255,127,.4);}
+        .blue-slider{ background:linear-gradient(to right, rgba(0,0,0,.3), #4169e1 30%, #00bfff 70%, #0080ff); box-shadow:0 5px 15px rgba(0,191,255,.4);}
+        .speed-slider{ background:linear-gradient(to right,#8a2be2,#da70d6 25%,#ff69b4 50%,#ff1493 75%,#dc143c); box-shadow:0 5px 15px rgba(218,112,214,.4);}
+        .color-preview{ width:100%; height:120px; border-radius:25px; border:4px solid rgba(255,255,255,.3); margin:25px 0; box-shadow: inset 0 2px 20px rgba(0,0,0,.2), 0 10px 30px rgba(0,0,0,.3), 0 0 50px rgba(255,105,180,.3); position:relative; overflow:hidden;}
+        .color-preview::before{ content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+            background:linear-gradient(45deg, transparent, rgba(255,255,255,.1), transparent); animation:shimmer 3s ease-in-out infinite;}
+        @keyframes shimmer{0%{transform:translateX(-100%) translateY(-100%) rotate(45deg)} 100%{transform:translateX(100%) translateY(100%) rotate(45deg)}}
+        .hex-display{ text-align:center; font-family:'Space Grotesk', monospace; font-size:1.4em; font-weight:700; background:linear-gradient(45deg,#ff69b4,#8a2be2,#4169e1);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; padding:15px; border-radius:20px; margin:15px 0; backdrop-filter:blur(10px); border:2px solid rgba(255,255,255,.2); background-color:rgba(255,255,255,.05);}
+        .color-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap:4px; margin-top:25px; max-height:550px; overflow-y:auto; border-radius:25px; background:rgba(255,255,255,.05); padding:20px; border:2px solid rgba(255,255,255,.1); backdrop-filter:blur(15px);}
+        .color-tile{ width:35px; height:35px; border-radius:12px; cursor:pointer; transition:all .3s cubic-bezier(.34,1.56,.64,1); border:2px solid rgba(255,255,255,.2); position:relative; overflow:hidden;}
+        .color-tile:hover{ transform:scale(1.4) rotate(5deg); z-index:100; border:3px solid rgba(255,255,255,.8); box-shadow:0 15px 35px rgba(0,0,0,.4), 0 0 30px rgba(255,105,180,.6);}
+        .send-button{ width:100%; padding:20px; background:linear-gradient(45deg,#ff1493 0%,#ff69b4 25%,#da70d6 50%,#8a2be2 75%,#4169e1 100%); background-size:200% 200%; animation:gradientShift 3s ease infinite;
+            color:white; border:none; border-radius:25px; font-size:1.2em; font-weight:700; font-family:'Space Grotesk', sans-serif; cursor:pointer; margin-top:25px; transition:all .3s cubic-bezier(.34,1.56,.64,1); box-shadow:0 10px 30px rgba(255,20,147,.4); border:2px solid rgba(255,255,255,.2); position:relative; overflow:hidden;}
+        @keyframes gradientShift{0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}}
+        .send-button::before{ content:'⚡'; position:absolute; right:20px; top:50%; transform:translateY(-50%); font-size:1.2em; animation:lightning 1.5s ease-in-out infinite;}
+        @keyframes lightning{0%,100%{opacity:.7; transform:translateY(-50%) scale(1)} 50%{opacity:1; transform:translateY(-50%) scale(1.2)}}
+        .send-button:hover{ transform:translateY(-5px) scale(1.02); box-shadow:0 20px 40px rgba(255,20,147,.6);}
+        .connection-status{ text-align:center; padding:15px; border-radius:20px; margin-bottom:25px; font-weight:600; font-size:1.1em; backdrop-filter:blur(15px); border:2px solid rgba(255,255,255,.2);}
+        .connected{ background:linear-gradient(45deg, rgba(0,255,127,.2), rgba(50,205,50,.2)); color:#00ff7f; box-shadow:0 5px 20px rgba(0,255,127,.3);}
+        .disconnected{ background:linear-gradient(45deg, rgba(255,69,0,.2), rgba(255,20,147,.2)); color:#ff69b4; box-shadow:0 5px 20px rgba(255,20,147,.3);}
+        @media (max-width:768px){ body{flex-direction:column; padding:15px; gap:20px} .control-panel,.color-panel{max-width:100%; min-width:auto} .panel{padding:25px} h1,h2{font-size:1.8em} .color-grid{grid-template-columns:repeat(auto-fill,minmax(25px,1fr)); gap:3px} .color-tile{width:25px; height:25px}}
+    </style>
+</head>
+<body>
+    <div class="panel control-panel">
+        <h1>✨ Cosmic LED ✨</h1>
+        
+        <div class="connection-status disconnected" id="status">
+            🚀 Ready for Launch
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label">
+                <span>🌹 Crimson</span>
+                <span class="slider-value" id="red-value">255</span>
+            </div>
+            <input type="range" min="0" max="255" value="255" class="slider red-slider" id="red-slider">
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label">
+                <span>🍃 Emerald</span>
+                <span class="slider-value" id="green-value">255</span>
+            </div>
+            <input type="range" min="0" max="255" value="255" class="slider green-slider" id="green-slider">
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label">
+                <span>💎 Sapphire</span>
+                <span class="slider-value" id="blue-value">255</span>
+            </div>
+            <input type="range" min="0" max="255" value="255" class="slider blue-slider" id="blue-slider">
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label">
+                <span>⚡ Velocity</span>
+                <span class="slider-value" id="speed-value">50</span>
+            </div>
+            <input type="range" min="1" max="100" value="50" class="slider speed-slider" id="speed-slider">
+        </div>
+
+        <div class="color-preview" id="color-preview"></div>
+        <div class="hex-display" id="hex-display">#FFFFFF</div>
+        
+        <button class="send-button" onclick="sendColorData()">Launch Colors</button>
+    </div>
+
+    <div class="panel color-panel">
+        <h2>🌈 Cosmic Palette</h2>
+        <div class="color-grid" id="color-grid"></div>
+    </div>
+
+    <script>
+        let currentColor = { r: 255, g: 255, b: 255 };
+        let currentSpeed = 50;
+
+        const redSlider = document.getElementById('red-slider');
+        const greenSlider = document.getElementById('green-slider');
+        const blueSlider = document.getElementById('blue-slider');
+        const speedSlider = document.getElementById('speed-slider');
+
+        function updateColorDisplay() {
+            const colorPreview = document.getElementById('color-preview');
+            const hexDisplay = document.getElementById('hex-display');
+            
+            const hex = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
+            colorPreview.style.background = `
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent 50%),
+                linear-gradient(45deg, 
+                    rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b}),
+                    rgb(${Math.max(0, currentColor.r - 30)}, ${Math.max(0, currentColor.g - 30)}, ${Math.max(0, currentColor.b - 30)})
+                )
+            `;
+            hexDisplay.textContent = hex;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function updateSliderValue(sliderId, valueId, value) {
+            const valueElement = document.getElementById(valueId);
+            valueElement.textContent = value;
+            valueElement.style.transform = 'scale(1.1)';
+            setTimeout(() => { valueElement.style.transform = 'scale(1)'; }, 150);
+            
+            if (sliderId === 'red-slider') currentColor.r = parseInt(value);
+            if (sliderId === 'green-slider') currentColor.g = parseInt(value);
+            if (sliderId === 'blue-slider') currentColor.b = parseInt(value);
+            if (sliderId === 'speed-slider') currentSpeed = parseInt(value);
+            
+            updateColorDisplay();
+        }
+
+        function setColorFromHex(hex) {
+            const rgb = hexToRgb(hex);
+            if (rgb) {
+                currentColor = rgb;
+                animateSlider(redSlider, rgb.r, 'red-value');
+                animateSlider(greenSlider, rgb.g, 'green-value');
+                animateSlider(blueSlider, rgb.b, 'blue-value');
+                updateColorDisplay();
+            }
+        }
+
+        function animateSlider(slider, targetValue, valueId) {
+            const startValue = parseInt(slider.value);
+            const duration = 500;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                
+                const currentValue = Math.round(startValue + (targetValue - startValue) * easeProgress);
+                slider.value = currentValue;
+                document.getElementById(valueId).textContent = currentValue;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function generateColorPalette() {
+            const colorGrid = document.getElementById('color-grid');
+            const cosmicColors = [
+                '#FF1493', '#FF69B4', '#FF6B8A', '#FF1472', '#DC143C',
+                '#8A2BE2', '#9370DB', '#BA55D3', '#DA70D6', '#DDA0DD',
+                '#4169E1', '#0080FF', '#00BFFF', '#87CEEB', '#87CEFA',
+                '#00FF7F', '#00FA9A', '#98FB98', '#90EE90', '#32CD32',
+                '#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347',
+                '#FF00FF', '#FF1493', '#C71585', '#DB7093', '#F0E68C'
+            ];
+            cosmicColors.forEach(color => {
+                const colorTile = document.createElement('div');
+                colorTile.className = 'color-tile cosmic-tile';
+                colorTile.style.background = `linear-gradient(45deg, ${color}, ${color}AA)`;
+                colorTile.title = color;
+                colorTile.onclick = () => setColorFromHex(color);
+                colorGrid.appendChild(colorTile);
+            });
+            for (let r = 0; r <= 255; r += 32) {
+                for (let g = 0; g <= 255; g += 32) {
+                    for (let b = 0; b <= 255; b += 32) {
+                        const hex = rgbToHex(r, g, b);
+                        if (!cosmicColors.includes(hex)) {
+                            const colorTile = document.createElement('div');
+                            colorTile.className = 'color-tile';
+                            colorTile.style.background = `linear-gradient(45deg, rgb(${r}, ${g}, ${b}), rgba(${r}, ${g}, ${b}, 0.8))`;
+                            colorTile.title = hex;
+                            colorTile.onclick = () => setColorFromHex(hex);
+                            colorGrid.appendChild(colorTile);
+                        }
+                    }
+                }
+            }
+        }
+
+        async function sendColorData() {
+            const button = document.querySelector('.send-button');
+            const status = document.getElementById('status');
+            button.style.transform = 'translateY(-10px) scale(1.05)';
+            button.innerHTML = '🚀 Launching...';
+            
+            const data = {
+                r: currentColor.r,
+                g: currentColor.g,
+                b: currentColor.b,
+                speed: currentSpeed,
+                timestamp: Date.now(),
+                mode: 'cosmic'
+            };
+
+            try {
+                const response = await fetch('http://192.168.1.100/setcolor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    status.textContent = '✨ Connected to Cosmos';
+                    status.className = 'connection-status connected';
+                } else { throw new Error('Failed to send data'); }
+            } catch (error) {
+                console.log('ESP32 not found, simulating cosmic send...');
+                status.textContent = '🌌 Simulated Launch (ESP32 not detected)';
+                status.className = 'connection-status disconnected';
+                console.log('Cosmic data would send:', data);
+            }
+            setTimeout(() => { button.style.transform = ''; button.innerHTML = 'Launch Colors'; }, 1000);
+        }
+
+        redSlider.oninput = (e) => {
+            updateSliderValue('red-slider', 'red-value', e.target.value);
+            e.target.style.boxShadow = '0 5px 20px rgba(255, 20, 147, 0.6)';
+            setTimeout(() => e.target.style.boxShadow = '0 5px 15px rgba(255, 20, 147, 0.4)', 200);
+        };
+        greenSlider.oninput = (e) => {
+            updateSliderValue('green-slider', 'green-value', e.target.value);
+            e.target.style.boxShadow = '0 5px 20px rgba(0, 255, 127, 0.6)';
+            setTimeout(() => e.target.style.boxShadow = '0 5px 15px rgba(0, 255, 127, 0.4)', 200);
+        };
+        blueSlider.oninput = (e) => {
+            updateSliderValue('blue-slider', 'blue-value', e.target.value);
+            e.target.style.boxShadow = '0 5px 20px rgba(0, 191, 255, 0.6)';
+            setTimeout(() => e.target.style.boxShadow = '0 5px 15px rgba(0, 191, 255, 0.4)', 200);
+        };
+        speedSlider.oninput = (e) => {
+            updateSliderValue('speed-slider', 'speed-value', e.target.value);
+            e.target.style.boxShadow = '0 5px 20px rgba(218, 112, 214, 0.6)';
+            setTimeout(() => e.target.style.boxShadow = '0 5px 15px rgba(218, 112, 214, 0.4)', 200);
+        };
+
+        generateColorPalette();
+        updateColorDisplay();
+    </script>
+</body>
+</html>

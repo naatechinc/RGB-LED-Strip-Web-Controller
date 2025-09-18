@@ -1,0 +1,33 @@
+{
+  "name": "cosmic-led-controller",
+  "version": "1.0.0",
+  "description": "\ud83c\udf08\u2728 A stunning web-based controller for WS2812B LED strips with cosmic-themed UI",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "led",
+    "controller",
+    "esp32",
+    "ws2812b",
+    "cosmic",
+    "rgb",
+    "arduino",
+    "iot"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/cosmic-led-controller.git"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
