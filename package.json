@@ -1,5 +1,5 @@
 {
-  "name": "cosmic-led-controller",
+  "name": "RGB-LED-Strip-Web-Controller",
   "version": "1.0.0",
   "description": "\ud83c\udf08\u2728 A stunning web-based controller for WS2812B LED strips with cosmic-themed UI",
   "main": "public/index.html",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/cosmic-led-controller.git"
+    "url": "https://github.com/yourusername/RGB-LED-Strip-Web-Controller.git"
   },
   "devDependencies": {
     "vercel": "^32.0.0"
