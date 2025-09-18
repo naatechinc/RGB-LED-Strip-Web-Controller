@@ -52,3 +52,5 @@ const char* password = "YOUR_WIFI_PASSWORD";
 - **Strobe** - Fast flashing effects
 
 Made with 💖 and ✨ cosmic energy ✨
+
+Deployed via Vercel 🚀
