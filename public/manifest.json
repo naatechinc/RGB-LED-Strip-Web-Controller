@@ -1,6 +1,6 @@
 {
   "name": "RGB-LED-Strip-Web-Controller",
-  "short_name": "CosmicLED",
+  "short_name": "RGB-LED-Web-Control",
   "description": "Control your WS2812B LED strips with cosmic style",
   "start_url": "/",
   "display": "standalone",
