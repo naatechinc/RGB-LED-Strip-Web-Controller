@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "cosmic-led-controller",
+  "name": "RGB-LED-Strip-Web-Controller",
   "builds": [
     {
       "src": "public/**",
