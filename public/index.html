@@ -146,6 +146,12 @@
     color: var(--text);
   }
 
+  .btn.secondary.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(124,92,252,0.1);
+  }
+
   .btn.danger {
     background: #2a1010;
     border: 1px solid var(--off);
@@ -426,6 +432,10 @@
     <button class="btn success" onclick="gameStart()">▶ Start</button>
     <button class="btn danger"  onclick="gameStop()">■ Stop</button>
   </div>
+  <div style="margin-top:12px">
+    <button class="btn secondary dir-btn active" id="btn-bounce" onclick="setDirection('bounce')">⇔ Bounce (default)</button>
+    <button class="btn secondary dir-btn"         id="btn-loop"   onclick="setDirection('loop')"  style="margin-left:8px">→ Loop</button>
+  </div>
 </div>
 
 <!-- Sliders -->
@@ -587,6 +597,21 @@ async function gameStop() {
   } catch { toast('Could not reach ESP32'); }
 }
 
+// ── Direction ─────────────────────────────────────────────────
+let currentDirection = 'bounce';
+
+async function setDirection(dir) {
+  currentDirection = dir;
+  document.getElementById('btn-bounce').classList.toggle('active', dir === 'bounce');
+  document.getElementById('btn-loop').classList.toggle('active',   dir === 'loop');
+  previewBounce = (dir === 'bounce');
+  if (!espIP) return;
+  try {
+    await get(`/game/set?direction=${dir}`);
+    toast(dir === 'bounce' ? 'Bounce mode' : 'Loop mode');
+  } catch {}
+}
+
 // ── Sliders ──────────────────────────────────────────────────
 function sliderUpdate(param, value, labelId, suffix) {
   document.getElementById(labelId).textContent = value + suffix;
@@ -668,6 +693,11 @@ async function pollState() {
     // update preview state
     chaseLength  = d.length;
     chaseRunning = d.running;
+    if (d.bounce !== undefined) {
+      previewBounce = d.bounce;
+      document.getElementById('btn-bounce').classList.toggle('active',  d.bounce);
+      document.getElementById('btn-loop').classList.toggle('active',   !d.bounce);
+    }
     if (!d.autoColor) {
       fixedColor = [d.colorR, d.colorG, d.colorB];
     }
@@ -684,8 +714,10 @@ if (espIP) pollState();
 const canvas  = document.getElementById('preview-canvas');
 const ctx     = canvas.getContext('2d');
 const N       = 265;
-let chaseLength  = 6;
-let chaseRunning = false;
+let chaseLength   = 6;
+let chaseRunning  = false;
+let previewBounce = true;
+let previewDir    = 1;
 
 function hsvToRgb(h, s, v) {
   h = (h % 256) / 255 * 360;
@@ -738,7 +770,13 @@ function drawPreview() {
   }
 
   if (chaseRunning) {
-    chasePos = (chasePos + 1) % N;
+    if (previewBounce) {
+      chasePos += previewDir;
+      if (previewDir === 1 && chasePos + chaseLength >= N) previewDir = -1;
+      else if (previewDir === -1 && chasePos <= 0)         previewDir =  1;
+    } else {
+      chasePos = (chasePos + 1) % N;
+    }
     chaseHue = (chaseHue + 8) % 256;
   }
 }
